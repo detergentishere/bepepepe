@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""
-mnist_air_live_ensemble_visual.py
 
-3-CNN ensemble for MNIST air drawing.
-Always drawing; left/right hand choice.
-After quitting the webcam loop, shows test accuracy visualizations.
-"""
 import os
 import time
 import argparse
@@ -40,7 +34,6 @@ PRED_LOCK_SECONDS = 4.0
 RESET_SECONDS = 2.0
 SMOOTH_N = 6
 
-# ----------------- Utilities -----------------
 def build_cnn():
     model = models.Sequential([
         layers.Input(shape=(28,28,1)),
@@ -106,8 +99,7 @@ def is_thumbs_up(landmarks):
     except Exception:
         return False
     return False
-
-# ----------------- Training / Loading -----------------
+    
 def train_and_save_ensemble(num_models=3, force_retrain=False):
     os.makedirs(MODEL_DIR, exist_ok=True)
     models_list = []
@@ -135,7 +127,7 @@ def train_and_save_ensemble(num_models=3, force_retrain=False):
         print(f"Model {i+1} test accuracy: {acc:.4f}")
     return models_list
 
-# ----------------- Live webcam loop -----------------
+
 def run_live_loop(models_list, writing_hand_choice):
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.6, min_tracking_confidence=0.6)
@@ -271,7 +263,6 @@ def run_live_loop(models_list, writing_hand_choice):
         hands.close()
         print("Clean exit.")
 
-# ----------------- Visualizations -----------------
 def show_ensemble_performance(models_list):
     """Visualize test accuracy for each model and ensemble average."""
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -301,7 +292,6 @@ def show_ensemble_performance(models_list):
         plt.text(i, v + 0.01, f"{v:.2f}", ha='center', fontweight='bold')
     plt.show()
 
-# ----------------- Main -----------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="mnist_air_live_ensemble_visual.py")
     parser.add_argument("--retrain", action="store_true", help="Force retrain of CNNs even if saved models exist.")
